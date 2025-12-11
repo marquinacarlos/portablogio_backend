@@ -1,0 +1,30 @@
+import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { UserModel } from '../models/userModel.js';
+
+export class AuthController {
+  
+  static async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+      const user = await UserModel.findByEmail(email);
+
+      if (!user) return res.status(400).json({ error: 'Usuario no encontrado' });
+
+      // Comparamos la contraseña enviada con el hash de la BD
+      const validPassword = await bcrypt.compare(password, user.password_hash);
+      if (!validPassword) return res.status(400).json({ error: 'Contraseña incorrecta' });
+
+      // Creamos el Token
+      const secret = process.env.JWT_SECRET || 'mi_secreto_super_seguro';
+      const token = jwt.sign({ id: user.id, username: user.username }, secret, {
+        expiresIn: '2h' // El token expira en 2 horas
+      });
+
+      res.json({ message: 'Bienvenido', token });
+    } catch (error) {
+      res.status(500).json({ error: 'Error en login' });
+    }
+  }
+}

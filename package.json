@@ -2,9 +2,12 @@
   "name": "portablogio_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "dist/app.js",
+  "type": "module",
   "scripts": {
-    "dev": "node --watch --env-file .env app.js"
+    "dev": "node --env-file=.env --loader ts-node/esm --watch app.ts",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/app.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -18,5 +21,14 @@
   "keywords": [],
   "author": "Carlos Marquina",
   "license": "MIT",
-  "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501"
+  "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501",
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.2",
+    "@types/pg": "^8.16.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }

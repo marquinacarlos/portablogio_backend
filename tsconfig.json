@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    /* Configuración de Directorios */
+    "rootDir": ".",              /* Permite archivos en la raíz (como app.ts) y src/ */
+    "outDir": "./dist",          /* Todo lo compilado va aquí */
+
+    /* Permite mezclar JS y TS */
+    "allowJs": true,
+    
+    /* Configuración de Módulos (Crucial para "type": "module") */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+
+    /* Interoperabilidad y Estrictez */
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["app.ts", "src/**/*"],  /* Incluimos explícitamente app.ts */
+  "exclude": ["node_modules", "dist"]
+}
