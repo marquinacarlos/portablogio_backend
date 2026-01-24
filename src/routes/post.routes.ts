@@ -4,16 +4,35 @@ import { authenticateToken } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-// Definición de rutas
-// GET /api/v1/posts
+// =============================================================================
+// RUTAS PÚBLICAS
+// =============================================================================
+
+// GET /api/v1/posts - Listar posts publicados (paginado)
 router.get('/', PostController.getPosts);
 
-// GET /api/v1/posts/mi-primer-post
-router.get('/:slug', PostController.getPostBySlug);
+// =============================================================================
+// RUTAS PROTEGIDAS (requieren autenticación)
+// IMPORTANTE: Rutas específicas ANTES de rutas con parámetros (:slug)
+// =============================================================================
 
-// POST /api/v1/posts
-// NOTA: Más adelante, aquí agregaremos un middleware de autenticación 
-// router.post('/', authMiddleware, PostController.createPost);
-router.post('/', authenticateToken, PostController.createPost); 
+// GET /api/v1/posts/admin - Listar todos los posts para admin (incluye drafts)
+router.get('/admin', authenticateToken, PostController.getPostsAdmin);
+
+// POST /api/v1/posts - Crear nuevo post
+router.post('/', authenticateToken, PostController.createPost);
+
+// PUT /api/v1/posts/:slug - Actualizar post existente
+router.put('/:slug', authenticateToken, PostController.updatePost);
+
+// DELETE /api/v1/posts/:slug - Eliminar post
+router.delete('/:slug', authenticateToken, PostController.deletePost);
+
+// =============================================================================
+// RUTA CON PARÁMETRO (debe ir AL FINAL para no capturar otras rutas)
+// =============================================================================
+
+// GET /api/v1/posts/:slug - Obtener post por slug
+router.get('/:slug', PostController.getPostBySlug);
 
 export default router;

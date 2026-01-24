@@ -26,7 +26,8 @@ export interface IPost {
   content: ContentBlock[]; // <--- AQUÍ ESTÁ LA CLAVE DEL JSONB
   cover_image_url?: string;
   type: 'blog' | 'collaboration';
-  status: 'draft' | 'published';
+  status: 'draft' | 'published' | 'archived';
   published_at?: Date;
   created_at?: Date;
+  updated_at?: Date;
 }

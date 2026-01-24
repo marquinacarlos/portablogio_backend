@@ -24,7 +24,7 @@ export class PostController {
     }
   }
 
-  // Obtener todos los posts (Público)
+  // Obtener todos los posts (Público - solo publicados)
   static async getPosts(req: Request, res: Response) {
     try {
       // Leemos query params para paginación (ej: ?limit=5&offset=0)
@@ -32,7 +32,22 @@ export class PostController {
       const offset = Number(req.query.offset) || 0;
 
       const posts = await PostModel.findAll(limit, offset);
-      
+
+      res.json({ data: posts });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al obtener los posts' });
+    }
+  }
+
+  // Obtener todos los posts para admin (incluye drafts y archived)
+  static async getPostsAdmin(req: Request, res: Response) {
+    try {
+      const limit = Number(req.query.limit) || 50;
+      const offset = Number(req.query.offset) || 0;
+
+      const posts = await PostModel.findAllAdmin(limit, offset);
+
       res.json({ data: posts });
     } catch (error) {
       console.error(error);
@@ -54,6 +69,54 @@ export class PostController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error al buscar el post' });
+    }
+  }
+
+  // Actualizar un post existente
+  static async updatePost(req: Request, res: Response) {
+    try {
+      const { slug } = req.params;
+      const updateData: Partial<IPost> = req.body;
+
+      // Verificar que el post existe
+      const existingPost = await PostModel.findBySlug(slug);
+      if (!existingPost) {
+        return res.status(404).json({ message: 'Post no encontrado' });
+      }
+
+      const updatedPost = await PostModel.update(slug, updateData);
+
+      res.json({
+        message: 'Post actualizado exitosamente',
+        data: updatedPost
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno al actualizar el post' });
+    }
+  }
+
+  // Eliminar un post
+  static async deletePost(req: Request, res: Response) {
+    try {
+      const { slug } = req.params;
+
+      // Verificar que el post existe
+      const existingPost = await PostModel.findBySlug(slug);
+      if (!existingPost) {
+        return res.status(404).json({ message: 'Post no encontrado' });
+      }
+
+      const deleted = await PostModel.delete(slug);
+
+      if (deleted) {
+        res.json({ message: 'Post eliminado exitosamente' });
+      } else {
+        res.status(500).json({ error: 'Error al eliminar el post' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno al eliminar el post' });
     }
   }
 }

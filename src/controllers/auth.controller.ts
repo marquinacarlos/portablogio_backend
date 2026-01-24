@@ -27,4 +27,26 @@ export class AuthController {
       res.status(500).json({ error: 'Error en login' });
     }
   }
+
+  static async register(req: Request, res: Response) {
+    try {
+      const { username, email, password } = req.body;
+
+      // Verificamos si el usuario ya existe
+      const existingUser = await UserModel.findByEmail(email);
+      if (existingUser) return res.status(400).json({ error: 'El usuario ya existe' });
+
+      // Hasheamos la contraseña
+      const saltRounds = 10;
+      const password_hash = await bcrypt.hash(password, saltRounds);
+
+      // Creamos el nuevo usuario
+      const newUser = await UserModel.create({ username, email, password_hash });
+
+      res.status(201).json({ message: 'Usuario registrado', userId: newUser.id });
+    } catch (error) {
+      res.status(500).json({ error: 'Error en registro' });
+    }
+  }
+  
 }

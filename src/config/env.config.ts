@@ -11,11 +11,13 @@ const required = [
 	"PROTOCOL",
 	"DOMAIN",
 	"PORT",
-	"CLIENT_URL"
+	"CLIENT_URLS"
 ];
 
 for (const key of required) {
-	if (!env === undefined) throw new Error(`Error config: The ${key} environment variable is missing`);
+	if (env[key] === undefined) { // ← Corregido: era !env === undefined
+		throw new Error(`Error config: The ${key} environment variable is missing`);
+	}
 }
 
 /**
@@ -30,11 +32,13 @@ export const {
 	DB_HOST,
 	DB_NAME,
 	DB_PASSWORD,
-	DB_PORT,
 	PROTOCOL,
 	DOMAIN,
-	PORT,
-	CLIENT_URL
+	CLIENT_URLS
 } = validatedEnv;
 
-export const API_URL = buildApiUrl({ PROTOCOL, DOMAIN, PORT });
+// Convertir a number para TypeScript
+export const DB_PORT = Number(validatedEnv.DB_PORT);
+export const PORT = Number(validatedEnv.PORT);
+
+export const API_URL = buildApiUrl({ PROTOCOL, DOMAIN, PORT: String(PORT) });
