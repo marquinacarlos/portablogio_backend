@@ -1,3 +1,51 @@
+import { Pool } from "pg";
+import {
+  DB_USER,
+  DB_HOST,
+  DB_NAME,
+  DB_PASSWORD,
+  DB_PORT
+} from "./env.config.js";
+
+const pool = new Pool(
+  // Si existe DATABASE_URL (producción), úsala
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    // Si no, usa variables separadas (local)
+    : {
+        user: DB_USER,
+        host: DB_HOST,
+        database: DB_NAME,
+        password: DB_PASSWORD,
+        port: Number(DB_PORT) || 5432,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+        maxLifetimeSeconds: 60
+      }
+);
+
+export const query = async (text: string, params?: any[]) => {
+  const start = Date.now();
+  try {
+    const res = await pool.query(text, params);
+    const duration = Date.now() - start;
+    return res;
+  } catch (error) {
+    console.error('Error en Database Query', error);
+    throw error;
+  }
+};
+
+
+
+/* 
+! Alternative simpler version without error logging
 import { Pool, Client } from "pg";
 import {
 		DB_USER,
@@ -32,3 +80,4 @@ export const query = async (text: string, params?: any[]) => {
     throw error;
   }
 };
+*/
