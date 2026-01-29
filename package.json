@@ -10,7 +10,8 @@
     "start": "node --env-file=.env dist/app.js",
     "start:prod": "node scripts/migrate.js && node dist/app.js",
     "migrate": "node --env-file=.env scripts/migrate.js",
-    "migrate:prod": "node scripts/migrate.js"
+    "migrate:prod": "node scripts/migrate.js",
+    "seed:admin": "node scripts/seed-admin.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
