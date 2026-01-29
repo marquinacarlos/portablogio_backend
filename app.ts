@@ -2,11 +2,11 @@ import express from 'express';
 import os from 'os';
 import cors from 'cors';
 import apiRoutes from './src/routes/index.js';
-import { PORT } from './src/config/env.config.js';
+import { PORT, CLIENT_URLS } from './src/config/env.config.js';
 
 function getLocalIP(): string {
   const interfaces = os.networkInterfaces();
-  
+
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name]!) {
       // Ignora IPs internas (127.0.0.1) y solo toma IPv4
@@ -15,15 +15,16 @@ function getLocalIP(): string {
       }
     }
   }
-  
+
   return 'localhost'; // Fallback
 }
 
 const app = express();
 const LOCAL_IP = getLocalIP();
 
-// CORS dinámico - permite localhost y tu IP real en la red
+// CORS - usa CLIENT_URLS de env (producción) + localhost (desarrollo)
 const allowedOrigins = [
+  ...CLIENT_URLS.split(',').map(url => url.trim()),
   'http://localhost:5173',
   `http://${LOCAL_IP}:5173`
 ];
